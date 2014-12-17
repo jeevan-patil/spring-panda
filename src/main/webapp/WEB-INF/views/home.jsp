@@ -36,7 +36,8 @@
 		<td><input id="saveBttn" value="Save" type="button"></td>
 	</tr>
 </table>
-<br/>
+<hr>
+<h3>Existing users</h3>
 <div id="allUsers"></div>
 </body>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery21.js"></script>
