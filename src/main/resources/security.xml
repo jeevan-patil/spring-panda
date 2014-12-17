@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+	<!-- <mvc:annotation-driven />
+	<context:annotation-config /> -->
+	<!-- <context:component-scan base-package="org.masc.invent" /> -->
+
+	<!-- authentication failure handler -->
+    <beans:bean id="authenticationFailureHandler" class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+        <beans:property name="exceptionMappings">
+            <beans:props>
+                <beans:prop key="org.springframework.security.authentication.BadCredentialsException">/?msg=cw</beans:prop>
+                <beans:prop key="org.springframework.security.authentication.CredentialsExpiredException">/?msg=ce</beans:prop>
+                <beans:prop key="org.springframework.security.authentication.LockedException">/?msg=al</beans:prop>
+                <beans:prop key="org.springframework.security.authentication.DisabledException">/?msg=ad</beans:prop>
+            </beans:props>
+        </beans:property>
+    </beans:bean>
+
+	<http auto-config="true" use-expressions="true" access-denied-page="/">	    
+		<intercept-url pattern="/dashboard" access="isFullyAuthenticated()" />
+		<form-login login-page="/" authentication-success-handler-ref="authSuccessHandler"  authentication-failure-handler-ref="authenticationFailureHandler" />
+		<logout invalidate-session="true" logout-url="/logout" success-handler-ref="logoutSuccessHanlder" delete-cookies="JSESSIONID" />
+		<session-management invalid-session-url="/" session-authentication-error-url="/">
+			<concurrency-control max-sessions="1" expired-url="/" error-if-maximum-exceeded="false" />
+		</session-management>
+	</http>
+
+	<!-- authentication success handler -->
+	<beans:bean id="authSuccessHandler" class="org.spring.panda.handlers.AuthSuccessHandler" />
+
+	<!-- logout success handler -->
+	<beans:bean id="logoutSuccessHanlder" class="org.spring.panda.handlers.LogoutSuccessHandler" />
+
+	<!-- password encoder -->
+	<beans:bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
+
+	<beans:bean id="daoAuthenticationProvider"
+        class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="authService" />
+    </beans:bean>
+
+	<beans:bean id="authenticationManager"
+        class="org.springframework.security.authentication.ProviderManager">
+        <beans:property name="providers">
+            <beans:list>
+                <beans:ref local="daoAuthenticationProvider" />
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+
+	<!-- this is the authentication service -->
+   <!--  <beans:bean id="authService" class="org.spring.panda.service.auth.AuthServiceImpl" /> -->
+
+	<!-- This is the authentication manager -->
+	<authentication-manager>
+	   <authentication-provider user-service-ref="authService">
+	   	<password-encoder ref="encoder" />
+       </authentication-provider>
+    </authentication-manager>
+	
+</beans:beans>
