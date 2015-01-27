@@ -48,6 +48,7 @@
 <h3>Existing users</h3>
 <div id="allUsers"></div>
 </body>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery21.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/angular.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/jquery21.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/user.js"></script>
 </html>
