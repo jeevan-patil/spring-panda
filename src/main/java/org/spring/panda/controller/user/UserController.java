@@ -1,49 +1,50 @@
 package org.spring.panda.controller.user;
 
-import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spring.panda.domain.User;
+import org.spring.panda.objects.Response;
 import org.spring.panda.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * 
+ * @author jeevan
+ * @date 23-Jan-2015
+ * @purpose 
+ *
+ */
 @Controller
 public class UserController {
-
+	private final Logger _log = LoggerFactory.getLogger(UserController.class);
+	
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private StandardPasswordEncoder encoder;
-
-	@ResponseBody
 	@RequestMapping(value = "user/add", method = RequestMethod.POST,  consumes= "application/json")
-	public Boolean addUser(@RequestBody User user) {
-		boolean response = false;
-
+	public ResponseEntity<Response> addUser(@RequestBody User user) {
+		Response response = null;
 		try {
-			CharSequence pass = "test";
-			user.setActive(true);
-			user.setPassword(encoder.encode(pass));
-			user.setRole("ROLE_USER");
-			user.setCreatedAt(new Date());
 			userService.addUser(user);
-			response = true;
+			response = new Response(true, "Customer saved successfully.");
 		} catch(Exception e) {
-			e.printStackTrace();
+			response = new Response(false, "Could not save customer.");
 		}
-		return response;
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "user/list", method = RequestMethod.GET)
 	@ResponseBody
-	public List<User> getAllUsersList() {
-		return userService.getAllUsers();
+	public ResponseEntity<List<User>> getAllUsersList() {
+		return new ResponseEntity<List<User>>(userService.getAllUsers(), HttpStatus.OK);
 	}
 }

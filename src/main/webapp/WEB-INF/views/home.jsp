@@ -8,7 +8,7 @@
 <h3>
 	Add new user
 </h3>
-<h6 id="err" style="display: none;color: red;">Everything is mandatory!</h6>
+<h6 id="err" style="display: none;color: red;"></h6>
 <input type="hidden" id="pageCtx" value="${pageContext.request.contextPath}">
 <table id="userInputs">
 	<tr>
@@ -30,6 +30,14 @@
 	<tr>
 		<td>Country:</td>
 		<td><input name="country" value="" /></td>
+	</tr>
+	<tr>
+		<td>Password:</td>
+		<td><input name="password" type="password" value="" /></td>
+	</tr>
+	<tr>
+		<td>Confirm password:</td>
+		<td><input name="confirmPassword" type="password" value="" /></td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>

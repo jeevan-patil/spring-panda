@@ -18,12 +18,17 @@ var addUser = function() {
 	var city = $.trim($("input[name='city']").val());
 	var state = $.trim($("input[name='state']").val());
 	var country = $.trim($("input[name='country']").val());
-
-	if(!fullName || !email || !city || !state || !country) {
-		$('#err').show();
+	var password = $.trim($("input[name='password']").val());
+	var confirmPassword = $.trim($("input[name='confirmPassword']").val());
+	
+	if(!fullName || !email || !city || !state || !country || !confirmPassword || !password) {
+		showError('Everything is mandatory!');
+		return;
+	} else if(password !== confirmPassword) {
+		showError('Passwords must match.');
 		return;
 	} else {
-		$('#err').hide();
+		hideError();
 	}
 
 	var user = new Object();
@@ -32,6 +37,7 @@ var addUser = function() {
 	user.city = city;
 	user.state = state;
 	user.country = country;
+	user.password = password;
 
 	$.ajax({
 		type : "POST",
@@ -43,12 +49,11 @@ var addUser = function() {
 		},
 		data : JSON.stringify(user),
 		success : function(response) {
-			alert("User added successfully.");
+			showError(response.message);
 			listAllUsers();
 			clearForm();
 		},
-		complete: function(){
-			
+		complete: function(response){
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			listAllUsers();
@@ -57,12 +62,24 @@ var addUser = function() {
 	});
 };
 
+var showError = function(msg) {
+	$('#err').html(msg);
+	$('#err').show();
+};
+
+var hideError = function() {
+	$('#err').html('');
+	$('#err').show();
+};
+
 var clearForm = function() {
 	$("input[name='fullName']").val('');
 	$("input[name='email']").val('');
 	$("input[name='city']").val('');
 	$("input[name='state']").val('');
 	$("input[name='country']").val('');
+	$("input[name='password']").val('');
+	$("input[name='confirmPassword']").val('');
 };
 
 var listAllUsers = function() {

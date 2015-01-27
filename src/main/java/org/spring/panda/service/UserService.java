@@ -6,6 +6,6 @@ import org.spring.panda.domain.User;
 
 public interface UserService {
 	List<User> getAllUsers();
-	
+
 	void addUser(User user);
 }
